@@ -1,0 +1,22 @@
+{
+  "name": "ftx_grid_trading_bot",
+  "version": "1.0.0",
+  "description": "The program was designed to run the Grid Trading Strategy in [FTX exchange](https://ftx.com/#a=1815639)",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AbirHamzi/ftx_grid_trading_bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AbirHamzi/ftx_grid_trading_bot/issues"
+  },
+  "homepage": "https://github.com/AbirHamzi/ftx_grid_trading_bot#readme",
+  "dependencies": {
+    "ccxt": "^1.49.93"
+  }
+}
