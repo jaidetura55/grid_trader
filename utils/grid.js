@@ -15,7 +15,8 @@ class Grid_trader {
     grid_level = 0,
     lower_price = 0.0,
     upper_price = 0.0,
-    amount = 0
+    amount = 0,
+    postOnly = false
   ) {
     this.exchange = exchange;
     this.symbol = symbol;
@@ -25,13 +26,19 @@ class Grid_trader {
     this.lower_price = lower_price;
     this.upper_price = upper_price;
     this.amount = amount;
+
     this.inteval_profit =
       (this.upper_price - this.lower_price) / this.grid_level;
+    this.postOnly = postOnly;
   }
 
   // List of functions
   test() {
     return this.inteval_profit;
+  }
+
+  togglePostValue(value) {
+    this.postOnly = value;
   }
 
   async place_order_init() {
@@ -59,7 +66,7 @@ class Grid_trader {
       console.log(error.message);
     }
   }
-  
+
   async send_request(task, input1 = {}, input2 = {}) {
     try {
       console.log("TAASK", task);
@@ -85,12 +92,16 @@ class Grid_trader {
         let side = input1;
         let price = input2;
         let orderid = 0;
+        let params = {
+          externalReferralProgram: "compendiumfi",
+          postOnly: this.postOnly,
+        };
         if (side == "buy") {
           console.log("BUY");
           let result = await this.exchange.createLimitBuyOrder(
             this.symbol,
             this.amount,
-            price
+            params
           );
 
           orderid = result["info"]["id"];

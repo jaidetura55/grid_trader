@@ -59,6 +59,7 @@ const updateNewGrid = async (req, res) => {
       lowerPrice,
       upperPrice,
       amount,
+      postOnly,
     } = req.body;
     const exchange = new ccxt.ftx({
       verbose: false,
@@ -78,7 +79,8 @@ const updateNewGrid = async (req, res) => {
       gridLevel,
       lowerPrice,
       upperPrice,
-      amount
+      amount,
+      postOnly
     );
     manager.stop(apiKey);
     manager.update(apiKey, main_job.place_order_init());
@@ -120,7 +122,7 @@ const cancelOrders = async (req, res) => {
 };
 const stopGrid = async (req, res) => {
   let { apiKey } = req.body;
-  
+
   try {
     manager.stop(apiKey);
     res.json({
@@ -128,7 +130,7 @@ const stopGrid = async (req, res) => {
       message: "Grid Trader Stopped",
     });
   } catch (error) {
-    console.log(`I got the current jobs: ${manager}`)
+    console.log(`I got the current jobs: ${manager}`);
     res.json({
       success: true,
       message: error.message,
