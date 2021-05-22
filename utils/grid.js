@@ -44,11 +44,12 @@ class Grid_trader {
   async place_order_init() {
     //start cal level and place grid oreder
     try {
-      for (var i = 0; i < this.grid_level + 1; i++) {
+      for (var i = 0; i < this.grid_level; i++) {
         // n+1 lines make n grid
         let price = this.lower_price + i * this.inteval_profit;
         let ticker = await this.send_request("get_bid_ask_price", "", "");
-        console.log(ticker);
+        console.log("Ticker", ticker);
+        console.log("INTERVAL PROFIT", this.inteval_profit);
         let bid_price = ticker["bid"];
         let ask_price = ticker["ask"];
         let order = new Oreder_Info();
@@ -69,25 +70,24 @@ class Grid_trader {
 
   async send_request(task, input1 = {}, input2 = {}) {
     try {
-      console.log("TAASK", task);
-      let ticker;
-      let tries = 3;
-
+      let ticker = await this.exchange.fetchTicker(this.symbol);
+      console.log("Ticker", ticker);
       if (
         task.toUpperCase().trim() === "get_bid_ask_price".toUpperCase().trim()
       ) {
-        console.log("HERE", 1);
-        ticker = await this.exchange.fetchTicker(this.symbol);
+        do {
+          ticker = await this.exchange.fetchTicker(this.symbol);
+        } while (ticker === undefined);
+
+        console.log("TICKER", ticker);
         return ticker;
       } else if (
         task.toUpperCase().trim() === "get_order".toUpperCase().trim()
       ) {
-        console.log("HERE", 2);
         return await this.exchange.fetchOrder(input1)["info"];
       } else if (
         task.toUpperCase().trim() == "place_order".toUpperCase().trim()
       ) {
-        console.log("HERE", 3);
         //send_request(self,task,input1=side,input2=price)
         let side = input1;
         let price = input2;
@@ -97,13 +97,12 @@ class Grid_trader {
           postOnly: this.postOnly,
         };
         if (side == "buy") {
-          console.log("BUY");
           let result = await this.exchange.createLimitBuyOrder(
             this.symbol,
             this.amount,
             params
           );
-
+          console.log("BUY RESULT", result["info"]);
           orderid = result["info"]["id"];
         } else {
           let result = await this.exchange.createLimitSellOrder(
@@ -111,7 +110,7 @@ class Grid_trader {
             this.amount,
             price
           );
-          console.log("RESULT", orderid);
+          console.log("SELL RESULT", result["info"]);
           orderid = result["info"]["id"];
         }
         return orderid;

@@ -2,6 +2,7 @@
 
 var ccxt = require("ccxt");
 var config = require("./setting.json");
+const GridTrader = require("./utils/grid").Grid_trader;
 
 // Classes Declaration
 
@@ -19,8 +20,8 @@ var config = require("./setting.json");
   });
 
   let markets = await exchange.loadMarkets();
-  console.log(markets);
-  let main_job = new Grid_trader(
+
+  let main_job = new GridTrader(
     exchange,
     config.symbol,
     markets,

@@ -30,13 +30,16 @@ const addNewGrid = async (req, res) => {
       exchange,
       symbol,
       markets,
-      gridLevel,
-      lowerPrice,
-      upperPrice,
-      amount
+      Number(gridLevel),
+      Number(lowerPrice),
+      Number(upperPrice),
+      Number(amount),
     );
-    manager.add(apiKey, "* 30 * * * *", main_job.place_order_init());
-    manager.start(apiKey);
+    let key = new String(apiKey);
+    manager.add(key.trim(), "60 * * * * *", async () => {
+      await main_job.place_order_init();
+    });
+    manager.start(key);
     res.json({
       success: true,
       message: "Grid Schedule Started",
@@ -76,15 +79,18 @@ const updateNewGrid = async (req, res) => {
       exchange,
       symbol,
       markets,
-      gridLevel,
-      lowerPrice,
-      upperPrice,
-      amount,
+      Number(gridLevel),
+      Number(lowerPrice),
+      Number(upperPrice),
+      Number(amount),
       postOnly
     );
-    manager.stop(apiKey);
-    manager.update(apiKey, main_job.place_order_init());
-    manager.start(apiKey);
+    let key = new String(apiKey);
+   
+    manager.stop(key);
+    manager.update(key, main_job.place_order_init());
+    manager.start(key);
+  
     res.json({
       success: true,
       message: "Grid Trader Updated",
